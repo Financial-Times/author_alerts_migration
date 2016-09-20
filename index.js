@@ -16,11 +16,14 @@ csvConverter.on('end_parsed', (userObj) => {
       const authorName = user.taxonomyName.toLowerCase();
       try {
         if (!user.taxonomyName) {
+          // user exists in author alerts db but has no taxonomy mapping
           unmappedFollows += `${user.userId}\n`;
         } else {
           const tagRes = yield fetch(`${tagFacetsHost}?taxonomies=authors&partial=${authorName}`);
           const tag = yield tagRes.json();
           if (!tag.length) {
+            // user has taxonomy mapping but tazonomy/author cannot be found in
+            // tag facets api
             missingAuthorFollows += `${user.userId},${user.taxonomyName}\n`;
           }
         }
